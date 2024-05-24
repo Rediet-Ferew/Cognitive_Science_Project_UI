@@ -4,11 +4,20 @@ import Example_1 from "./Example_1";
 import Example_2 from "./Example_2";
 import Example_3 from "./Example_3";
 import { IoMdArrowUp } from "react-icons/io";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 const Chat = () => {
   const [message, setMessage] = useState("");
   const [conversation, setConversation] = useState([]);
   const [examplesVisible, setExamplesVisible] = useState(true); // State to control visibility of example components
+  const [selectedApi, setSelectedApi] = useState("MiniGPT_One"); // State for selected API
+  const [dropdownVisible, setDropdownVisible] = useState(false); // State to control dropdown visibility
+
+  const apis = {
+    MiniGPT_One: "https://cognitive-dialogue-generation-using-gpt-3.onrender.com/chat",
+    MiniGPT_Two: "https://cognitive-dialogue-generation-using-gpt-3.onrender.com/chat_two",
+    MiniGPT_Three: "https://cognitive-dialogue-generation-using-gpt-3.onrender.com/chat_three",
+  };
 
   const sendMessage = async () => {
     if (message.trim() === "") return;
@@ -23,8 +32,8 @@ const Chat = () => {
     setMessage(""); // Clear the input field
 
     try {
-      // Send the message to the API
-      const response = await axios.post("https://cognitive-dialogue-generation-using-gpt-3.onrender.com/chat", { text: userMessage });
+      // Send the message to the selected API
+      const response = await axios.post(apis[selectedApi], { text: userMessage });
       
       // Add the response to the conversation
       setConversation((prevConversation) => [
@@ -52,18 +61,52 @@ const Chat = () => {
     setExamplesVisible(false); // Hide examples when a message is clicked
   };
 
+  const handleApiChange = (api) => {
+    setSelectedApi(api);
+    setDropdownVisible(false);
+  };
+
   return (
     <div className="flex flex-col p-4 items-center h-screen overflow-hidden">
-      <div>
-        <h1 className="text-gray-100 text-4xl font-bold">MiniGPT</h1>
+      <div className="flex justify-center w-full">
+        <div className="relative mr-auto">
+          <button
+            onClick={() => setDropdownVisible(!dropdownVisible)}
+            className="bg-gray-700 text-gray-400 px-4 py-2 rounded"
+          >
+            <div className="flex items-center">
+              <p className="text-center">{selectedApi}</p>
+              <MdOutlineKeyboardArrowDown className="mt-1 w-6 h-6"/>
+            </div>
+          </button>
+          {dropdownVisible && (
+            <div className="absolute bg-gray-800 text-gray-400 mt-2 rounded shadow-lg">
+              {Object.keys(apis).map((apiKey, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleApiChange(apiKey)}
+                  className="px-4 py-2 cursor-pointer hover:bg-gray-700"
+                >
+                  {apiKey}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+       
       </div>
       {examplesVisible && (
-        <div className="flex mx-20 mt-24">
+
+        <div className="flex-col justify-between mt-24">
+           <h1 className="text-gray-100 text-4xl font-bold text-center mb-8">MiniGPT</h1>
+          <div className="flex mx-20">
           <Example_1 />
           <Example_2 />
           <Example_3 />
           <Example_3 />
         </div>
+        </div>
+        
       )}
 
       <div className={`mb-4 rounded-xl w-full max-w-2xl ${examplesVisible ? '' : 'mt-10'}`}>

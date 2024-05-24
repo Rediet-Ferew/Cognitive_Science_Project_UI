@@ -1,4 +1,3 @@
-import MainContent from "./components/MainComponent";
 import Sidebar from "./components/Sidebar";
 import Chat from './components/Chat';
 
