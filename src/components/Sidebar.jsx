@@ -12,7 +12,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="bg-gray-900 p-4 min-h-screen flex flex-col w-1/4">
+    <div className="fixed left-0 top-0 bottom-0 h-full bg-gray-900 w-64 p-4 flex flex-col">
       <nav className="flex-grow">
         <ul>
           <li className="mb-2">
